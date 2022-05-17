@@ -1,22 +1,22 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateUserInput {
-  @Field()
+  @Field(() => String, { description: 'username' })
   username: string;
 
-  @Field()
+  @Field(() => String, { description: 'email' })
   email: string;
 
-  @Field()
+  @Field(() => Number, { description: 'number' })
   number: number;
 
-  @Field()
+  @Field(() => String, { description: 'role' })
   role: string;
 
-  @Field()
+  @Field(() => String, { description: 'createdAt' })
   createdAt: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true, description: 'lastUpdatedAt' })
   lastUpdatedAt?: string;
 }

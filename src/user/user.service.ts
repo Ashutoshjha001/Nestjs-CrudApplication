@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ApolloError } from 'apollo-server-express';
+import { GraphQLError } from 'graphql';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -11,45 +13,60 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  create(createUserInput: CreateUserInput): Promise<User> {
-    const newUser = this.userRepository.create(createUserInput);
+  async create(createUserInput: CreateUserInput): Promise<User> {
+    try {
+      const userExists = await this.userRepository.findOne({
+        where: { username: createUserInput.username },
+      });
 
-    return this.userRepository.save(newUser);
+      if (userExists) {
+        throw new GraphQLError('User Already Exits');
+      }
+      return await this.userRepository.save({ ...createUserInput });
+    } catch (error) {
+      throw new ApolloError(error);
+    }
   }
 
-  findAll(): Promise<User[]> {
-    return this.userRepository.find();
+  async findAll(): Promise<User[]> {
+    try {
+      return await this.userRepository.find();
+    } catch (error) {
+      throw new ApolloError(error);
+    }
   }
 
-  findOne(id: number): Promise<User> {
-    return this.userRepository.findOneOrFail(id);
+  async findOne(id: number): Promise<User> {
+    try {
+      const user = await this.userRepository.findOne(id);
+      if (!user) {
+        throw new GraphQLError('User is not present');
+      }
+      return user;
+    } catch (error) {
+      throw new ApolloError(error);
+    }
   }
 
   async update(id: number, updateUserInput: UpdateUserInput): Promise<User> {
-    const findUserById = await this.findOne(id);
-
-    findUserById.email =
-      updateUserInput.email !== null
-        ? updateUserInput.email
-        : findUserById.email;
-    findUserById.number =
-      updateUserInput.number !== null
-        ? updateUserInput.number
-        : findUserById.number;
-    findUserById.lastUpdatedAt = new Date().toDateString();
-    findUserById.role =
-      updateUserInput.role !== null ? updateUserInput.role : findUserById.role;
-    findUserById.username =
-      updateUserInput.username !== null
-        ? updateUserInput.username
-        : findUserById.username;
-
-    updateUserInput.lastUpdatedAt = new Date().toDateString();
-
-    return this.userRepository.save(updateUserInput);
+    try {
+      await this.findOne(id);
+      updateUserInput.lastUpdatedAt = new Date().toDateString();
+      return await this.userRepository.save(updateUserInput);
+    } catch (error) {
+      throw new ApolloError(error);
+    }
   }
 
   async remove(id: number) {
-    return await this.userRepository.delete(id);
+    try {
+      const user = await this.userRepository.delete(id);
+      if (!user) {
+        throw new GraphQLError('User is not present');
+      }
+      return user;
+    } catch (error) {
+      throw new ApolloError(error);
+    }
   }
 }

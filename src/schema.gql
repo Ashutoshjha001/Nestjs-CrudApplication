@@ -24,20 +24,44 @@ type Mutation {
 }
 
 input CreateUserInput {
+  """username"""
   username: String!
+
+  """email"""
   email: String!
+
+  """number"""
   number: Float!
+
+  """role"""
   role: String!
+
+  """createdAt"""
   createdAt: String!
+
+  """lastUpdatedAt"""
   lastUpdatedAt: String
 }
 
 input UpdateUserInput {
+  """username"""
   username: String
+
+  """email"""
   email: String
+
+  """number"""
   number: Float
+
+  """role"""
   role: String
+
+  """createdAt"""
   createdAt: String
+
+  """lastupdatedAt"""
   lastUpdatedAt: String
+
+  """id"""
   id: Int!
 }
