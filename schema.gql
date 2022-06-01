@@ -1,0 +1,67 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Int!
+  username: String!
+  email: String!
+  number: Float!
+  role: String!
+  createdAt: String!
+  lastUpdatedAt: String
+}
+
+type Query {
+  getAllUsers: [User!]!
+  getUserById(id: Int!): User!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+}
+
+input CreateUserInput {
+  """username"""
+  username: String!
+
+  """email"""
+  email: String!
+
+  """number"""
+  number: Float!
+
+  """role"""
+  role: String!
+
+  """createdAt"""
+  createdAt: String!
+
+  """lastUpdatedAt"""
+  lastUpdatedAt: String
+}
+
+input UpdateUserInput {
+  """username"""
+  username: String
+
+  """email"""
+  email: String
+
+  """number"""
+  number: Float
+
+  """role"""
+  role: String
+
+  """createdAt"""
+  createdAt: String
+
+  """lastupdatedAt"""
+  lastUpdatedAt: String
+
+  """id"""
+  id: Int!
+}
